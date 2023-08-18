@@ -32,7 +32,7 @@ jobs:
           elif [ "$PORT_EXIST" = "process" ]; then
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
-  build_run:
+  compile_and_execute:
     name: "Compile and Execute a Java Maven Dependency Project"
     runs-on: self-hosted
     needs: check-port
