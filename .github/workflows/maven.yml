@@ -16,7 +16,9 @@ jobs:
   build:
 
     runs-on: self-hosted
-
+    services:
+      docker:
+        image: docker:20.10.25-dind
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -29,9 +31,6 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Docker Installation Status
       run: docker --version
-    - name: Post Job Setup
-      run: |
-       chmod 666 /var/run/docker.sock
     - name: Build Docker Image
       run: docker build -t image_name:latest .
     - name: Get running containers
