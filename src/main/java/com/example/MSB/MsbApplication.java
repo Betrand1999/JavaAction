@@ -11,7 +11,7 @@ public class MsbApplication {
 
     @GetMapping("/")
     public String hello() {
-        return "<h1>Hello, JVM and execute in Background</h1>";
+        return "<h1>Hello, Jar JVM and execute in Background</h1>";
     }
 	public static void main(String[] args) {
 		SpringApplication.run(MsbApplication.class, args);
