@@ -10,6 +10,7 @@ jobs:
   build_run:
     name: "Compile and Execute a Java Maven Dependency Project"
     runs-on: self-hosted
+    needs: check-port
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
