@@ -36,10 +36,6 @@ jobs:
       - name: "Build with Maven"
         run: mvn -B package --file pom.xml
       - name: "Build Docker Image"
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/image_name:latest-${{ github.sha }} .
-      - name: "Login to Docker Hub"
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - name: "Push Docker image to Docker Hub"
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/image_name:latest-${{ github.sha }}
+        run: docker build -t image_name:latest .
       - name: "Launch Docker containers using the image_name:latest."
-        run: docker run -it --rm -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/image_name:latest-${{ github.sha }}
+        run: docker run -it --rm -d -p 80:80 image_name:latest
