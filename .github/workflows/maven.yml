@@ -29,7 +29,7 @@ jobs:
     - name: Get Docker API Version
       run: docker version --format '{{.Server.APIVersion}}'
     - name: Docker Installation Version
-      run: docker --version
+      run: /usr/bin/docker version --version
     - name: Build Docker Image
       run: docker build -t image_name:latest .
     - name: Get running containers
