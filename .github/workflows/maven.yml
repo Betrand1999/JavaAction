@@ -26,28 +26,22 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Check for Running Containers Exposing Port 80
-      id: check-containers
-      run: |
-        if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
-          echo "There are running containers exposing port 80."
-          echo "::set-output name=containers_exist::true"
-        else
-          echo "No running containers exposing port 80."
-          echo "::set-output name=containers_exist::false"
-        fi
-    - name: Use the Conditional Output
-      if: steps.check-containers.outputs.containers_exist == 'true'
-      run: |
-        # Your commands to run when containers exist
-        echo "Running commands for existing containers."
     - name: Docker Installation Version
       run: docker --version
     - name: Build Docker Image
       run: docker build -t image_name:latest .
     - name: Get running containers
       run: docker ps
-    - name: Stop Port 80 running Containers
+    - name: Check for Running Containers Exposing Port 80
+      id: check-containers
+      run: |
+        if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
+          echo "::set-output name=containers_exist::true"
+        else
+          echo "::set-output name=containers_exist::false"
+        fi
+    - name: Stop Containers Exposing Port 80
+      if: steps.check-containers.outputs.containers_exist == 'true'
       run: docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running")  
     - name: Start Docker containers with image_name:latest
       run: docker run -d -p 80:80 image_name:latest
