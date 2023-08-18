@@ -38,6 +38,7 @@ jobs:
           if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
             echo "There are running containers exposing port 80."
             echo "containers_exist=true" >> $GITHUB_ENV
+            docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           else
             echo "No running containers exposing port 80."
             echo "containers_exist=false" >> $GITHUB_ENV
@@ -47,7 +48,7 @@ jobs:
         CONTAINERS_EXIST: ${{ steps.check-container.outputs.containers_exist }}
       run: |
           if [ "$CONTAINERS_EXIST" = "true" ]; then
-            docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running")  
+            echo "There are running containers exposing port 80."
           fi
     - name: Start Docker containers with image_name:latest
       run: docker run -d -p 80:80 image_name:latest
