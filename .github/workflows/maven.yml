@@ -33,7 +33,7 @@ jobs:
     - name: Get running containers
       run: docker ps
     - name: Grep LISTEN Port
-      run: sudo lsof -i -P -n | grep LISTEN
+      run: lsof -i -P -n | grep LISTEN
     - name: Stop Port 80 running Containers
       run: docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running")
     - name: Start Docker containers with image_name:latest
