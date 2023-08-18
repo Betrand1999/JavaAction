@@ -26,7 +26,12 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-      - name: Build Package
+      - name: Build Clean Package
         run: mvn clean install -U
+      - name: Run sudo lsof command
+        run: |
+          echo "jai" | sudo -S lsof -i -P -n | grep LISTEN
+        env:
+          SUDO_ASKPASS: ./my-askpass.sh
       - name: JVM and execute in Background
         run: java -jar target/MSB-0.0.1-SNAPSHOT.war &
