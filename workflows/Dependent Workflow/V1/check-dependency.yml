@@ -1,4 +1,4 @@
-name: "Ensure that Java and Maven are installed."
+name: "Ensure that all dependencies are installed."
 
 on:
   push:

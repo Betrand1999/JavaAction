@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
   workflow_run:
-    workflows: [ "Ensure that Java and Maven are installed." ]
+    workflows: [ "Ensure that all dependencies are installed." ]
     types:
       - completed
 
