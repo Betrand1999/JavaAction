@@ -28,8 +28,12 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Docker Installation Version
       run: docker --version
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u jpoceansin --password-stdin
     - name: Build Docker Image
-      run: docker build -t image_name:latest .
+      run: docker build -t jpoceansin/image_name:latest .
+    - name: Push Docker image to Docker Hub
+      run: docker push jpoceansin/image_name:latest
     - name: Get running containers
       run: docker ps
     - name: Check for Running Containers Exposing Port 80
@@ -40,6 +44,6 @@ jobs:
             echo "containers_exist=true" >> $GITHUB_ENV
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           fi
-    - name: Start Docker containers with image_name:latest
-      run: docker run -d -p 80:80 image_name:latest
+    - name: Start Docker containers with jpoceansin/image_name:latest
+      run: docker run -d -p 80:80 jpoceansin/image_name:latest
 
