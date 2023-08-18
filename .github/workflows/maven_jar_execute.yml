@@ -22,4 +22,15 @@ jobs:
           echo "jai" | sudo -S lsof -i -P -n | grep LISTEN
         env:
           SUDO_ASKPASS: ./my-askpass.sh
+      - name: Check for Running Containers Exposing Port 80
+        id: check-containers
+        run: |
+            if echo "jai" | sudo -S lsof -t -i:80 > /dev/null; then
+              echo "There are running containers exposing port 80."
+              echo "containers_exist=true" >> $GITHUB_ENV
+            else
+              echo "No running containers exposing port 80."
+              echo "containers_exist=false" >> $GITHUB_ENV
+            fi
+            
 
