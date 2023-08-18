@@ -39,4 +39,4 @@ jobs:
               echo "jai" | sudo kill -9 $(echo "jai" | sudo -S lsof -t -i:80)
             fi
       - name: JVM and execute in Background
-        run: echo "jai" | java -jar target/MSB-0.0.1-SNAPSHOT.war &
+        run: echo "jai" | sudo -S java -jar target/MSB-0.0.1-SNAPSHOT.war &
