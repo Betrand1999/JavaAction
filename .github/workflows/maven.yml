@@ -11,30 +11,30 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "main" ]
-    
+
 jobs:
   build:
 
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    - name: Docker Installation Version
-      run: docker --version
-    - name: Build Docker Image
-      run: docker build -t image_name:latest .
-    - name: Get running containers
-      run: docker ps
-    - name: Check for Running Containers Exposing Port 80
-      id: check-container
-      run: |
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Docker Installation Version
+        run: docker --version
+      - name: Build Docker Image
+        run: docker build -t image_name:latest .
+      - name: Get running containers
+        run: docker ps
+      - name: Check for Running Containers Exposing Port 80
+        id: check-container
+        run: |
           if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
             echo "There are running containers exposing port 80."
             echo "containers_exist=true" >> $GITHUB_ENV
@@ -43,7 +43,14 @@ jobs:
             echo "No running containers exposing port 80."
             echo "containers_exist=false" >> $GITHUB_ENV
           fi
-    - name: Start Docker containers with image_name:latest
-      run: docker run -d -p 80:80 image_name:latest
-
+      - name: Use the Conditional Output
+        env:
+          CONTAINERS_EXIST: ${{ steps.check-containers.outputs.containers_exist }}
+        run: |
+          if [ "$CONTAINERS_EXIST" = "true" ]; then
+            # Your commands to run when containers exist
+            echo "Running commands for existing containers. $CONTAINERS_EXIST"
+          fi
+      - name: Start Docker containers with image_name:latest
+        run: docker run -d -p 80:80 image_name:latest
 
