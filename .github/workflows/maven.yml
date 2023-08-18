@@ -32,6 +32,8 @@ jobs:
       run: docker build -t image_name:latest .
     - name: Get running containers
       run: docker ps
+    - name: Stop Port 80 running Containers
+      run: docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running")  
     - name: Start Docker containers with image_name:latest
       run: docker run -d -p 80:80 image_name:latest
 
