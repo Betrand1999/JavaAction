@@ -3,7 +3,7 @@ name: "Ensure that Java and Maven are installed."
 on:
   push:
     paths:
-      - '.github/workflows/check-java-maven.yml'
+      - '.github/workflows/check-dependency.yml'
 
 jobs:
   check-java-maven:
@@ -21,6 +21,4 @@ jobs:
           if ! command -v mvn &> /dev/null; then
             echo "Maven not found, installing..."
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S yum install -y maven
-          else
-            echo "Maven is already installed"
           fi

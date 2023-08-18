@@ -34,5 +34,7 @@ jobs:
         uses: actions/checkout@v3
       - name: "Build with Maven"
         run: mvn -B package --file pom.xml
-      - name: "Run the project in the background using the JVM with the command 'java -jar target/..SNAPSHOT.war'."
-        run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S java -jar target/MSB-0.0.1-SNAPSHOT.war &
+      - name: "Build Docker Image"
+        run: docker build -t image_name:latest .
+      - name: "Launch Docker containers using the image_name:latest."
+        run: docker run -it --rm -d -p 80:80 image_name:latest

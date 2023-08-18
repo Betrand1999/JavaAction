@@ -1,5 +1,5 @@
-# Use an official OpenJDK runtime as the base image
-FROM openjdk:17-jdk-slim
+# Use an official maven:3.8.4-openjdk-17-slim OpenJDK runtime as the base image
+FROM maven:3.8.4-openjdk-17-slim
 
 # Set the working directory inside the container
 WORKDIR /app
