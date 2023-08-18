@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: "Ensure that Maven is not installed; if it is not, proceed to install it."
+      - name: "Ensure that Maven is installed. If it isn't, proceed with its installation."
         run: |
           if ! command -v mvn &> /dev/null; then
             echo "Maven not found, installing..."
@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v3
       - name: "List of Ports Currently in the LISTEN State"
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
-      - name: "Identify the Process on Port 80"
+      - name: "Identify the process on port 80 and terminate it."
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "Terminate the process running on port 80."
@@ -61,7 +61,7 @@ jobs:
             echo "Docker is installed"
             echo "docker_exist=true" >> $GITHUB_ENV
           fi
-      - name: "Identify containers with active processes on Port 80 and then stop them."
+      - name: "Identify containers with active processes on Port 80 and proceed to stop them."
         env:
           CONTAINERS_EXIST: ${{ steps.check-docker.outputs.docker_exist }}
         run: |
@@ -71,8 +71,8 @@ jobs:
               docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
             fi
           fi
-  build:
-    name: "Build Java Maven Dependency  Project"
+  build_run:
+    name: "Compile and Execute a Java Maven Dependency Project"
     runs-on: self-hosted
     needs: check-docker
     steps:
