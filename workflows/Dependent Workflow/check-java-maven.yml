@@ -1,0 +1,23 @@
+name: "Ensure that Java and Maven are installed."
+
+on: [ push ]
+
+jobs:
+  check-java-maven:
+    runs-on: self-hosted
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+      - name: "Set up JDK 17"
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: "Ensure that Maven is installed"
+        run: |
+          if ! command -v mvn &> /dev/null; then
+            echo "Maven not found, installing..."
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S yum install -y maven
+          else
+            echo "Maven is already installed"
+          fi
