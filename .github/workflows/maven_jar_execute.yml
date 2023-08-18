@@ -17,22 +17,9 @@ jobs:
 
     runs-on: self-hosted
     steps:
-      - name: Check for LISTEN Running Port
-        run:  echo "jai" | sudo lsof -i -P -n | grep LISTEN
-        env:
-          SUDO_ASKPASS: /dev/null
-      - name: Check for LISTEN Running Port
-        run: lsof -i -P -n | grep LISTEN
-      - name: Check for Running Port 80 then kill process Id
-        id: check-containers
+      - name: Run sudo lsof command
         run: |
-          if lsof -t -i:80 > /dev/null; then
-             echo "There are running port 80."
-             kill -9 `lsof -t -i:80`
-          fi
-      - name: Switch Root to Jai User
-        run: echo "jai" | su -jai
+          echo "jai" | sudo -S lsof -i -P -n | grep LISTEN
         env:
           SUDO_ASKPASS: ./my-askpass.sh
-      - name: JVM and execute in Background
-        run: java -jar target/MSB-0.0.1-SNAPSHOT.war &
+
