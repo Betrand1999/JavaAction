@@ -1,1 +1,41 @@
 
+# Compiled class file
+target/
+
+# IDE files
+.idea/
+.vscode/
+
+# Spring Boot application properties
+application*.yml
+application*.properties
+
+# Maven artifact lock file
+mvnw.lock
+
+# Log files
+*.log
+log/
+
+# Maven Wrapper JAR
+.mvn/wrapper/maven-wrapper.jar
+
+# Local repository directory (change this path if needed)
+repository/
+
+# IDE-specific settings
+*.iml
+*.ipr
+*.iws
+
+# Generated documentation
+/docs/
+
+# macOS specific files
+.DS_Store
+
+# Thumbnails created by macOS
+._*
+
+# Maven temporary files
+*.mvn/
