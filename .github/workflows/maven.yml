@@ -36,9 +36,9 @@ jobs:
       id: check-containers
       run: |
         if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
-          echo "::set-output name=containers_exist::true"
+          echo "::save-state name=containers_exist::true"
         else
-          echo "::set-output name=containers_exist::false"
+          echo "::save-state name=containers_exist::false"
         fi
     - name: Stop Containers Exposing Port 80
       if: steps.check-containers.outputs.containers_exist == 'true'
