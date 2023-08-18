@@ -32,7 +32,6 @@ jobs:
     - name: Post Job Setup
       run: |
        chmod 666 /var/run/docker.sock
-      shell: bash
     - name: Build Docker Image
       run: docker build -t image_name:latest .
     - name: Get running containers
