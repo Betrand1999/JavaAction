@@ -31,7 +31,7 @@ jobs:
       run: docker --version
     - name: Post Job Setup
       run: |
-       sudo chmod 666 /var/run/docker.sock
+       chmod 666 /var/run/docker.sock
       shell: bash
     - name: Build Docker Image
       run: docker build -t image_name:latest .
