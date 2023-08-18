@@ -14,7 +14,7 @@ on:
 
 jobs:
   check-java-maven:
-    name: "Verify Java Maven Dependency"
+    name: "Ensure that Java and Maven are installed."
     runs-on: self-hosted
     steps:
       - name: "Checkout code"
@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: "Ensure that Maven is installed. If it isn't, proceed with its installation."
+      - name: "Ensure that Maven is installed"
         run: |
           if ! command -v mvn &> /dev/null; then
             echo "Maven not found, installing..."
@@ -33,7 +33,7 @@ jobs:
             echo "Maven is already installed"
           fi
   check-port:
-    name: "Check for Processes on Port 80 if Present"
+    name: "Ensure that Port 80 is not in a running state."
     runs-on: self-hosted
     needs: check-java-maven
     steps:
@@ -48,7 +48,7 @@ jobs:
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
   check-docker:
-    name: "Verify Docker installation and terminate processes on port 80 if they are present."
+    name: "Verify if Docker is installed and a container is running. If there are processes on port 80, terminate them."
     runs-on: self-hosted
     needs: check-port
     steps:
