@@ -1,8 +1,10 @@
 name: "Compile and Execute a Java Maven Dependency Project"
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: [ "Ensure that Java and Maven are installed."]
+    types:
+      - completed
 
 jobs:
   check-port:
