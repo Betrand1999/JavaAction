@@ -19,19 +19,8 @@ jobs:
         id: check-port
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
-            echo "port_exist=containerd" >> $GITHUB_ENV
-          elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
-            echo "port_exist=process" >> $GITHUB_ENV
-          fi
-      - name: "Terminate processes on port 80"
-        env:
-          PORT_EXIST: ${{ steps.check-port.outputs.port_exist }}
-        run: |
-          if [ "$PORT_EXIST" = "containerd" ]; then
-             echo "The value of \$PORT_EXIST is 'containerd'"
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
-          elif [ "$PORT_EXIST" = "process" ]; then
-             echo "The value of \$PORT_EXIST is 'process'"
+          elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
   compile_and_execute:
