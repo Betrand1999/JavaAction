@@ -27,6 +27,7 @@ jobs:
         env:
           PORT_EXIST: ${{ steps.check-port.outputs.port_exist }}
         run: |
+          echo "${{ echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 }}"
           if [ "$PORT_EXIST" = "containerd" ]; then
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           elif [ "$PORT_EXIST" = "process" ]; then
