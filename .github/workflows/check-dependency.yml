@@ -21,6 +21,4 @@ jobs:
           if ! command -v mvn &> /dev/null; then
             echo "Maven not found, installing..."
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S yum install -y maven
-          else
-            echo "Maven is already installed"
           fi
