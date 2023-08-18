@@ -42,15 +42,26 @@ jobs:
       - name: "List of Ports Currently in the LISTEN State"
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
       - name: "Identify the process on port 80 and terminate it."
+        id: check-port
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
-            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd)"
-            docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
+            echo "port_exist=containerd" >> $GITHUB_ENV
           elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
-            echo "Terminate the process running on port 80."
+            echo "port_exist=process" >> $GITHUB_ENV
+          fi
+      - name: "Terminate processes on port 80"
+        env:
+          PORT_EXIST: ${{ steps.check-port.outputs.port_exist }}
+        run: |
+          if [ "$PORT_EXIST" = "process" ]; then
+            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p"
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
-
+          if [ "$PORT_EXIST" = "containerd" ]; then
+            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd)"
+            docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
+          fi
+          
   build_run:
     name: "Compile and Execute a Java Maven Dependency Project"
     runs-on: self-hosted
