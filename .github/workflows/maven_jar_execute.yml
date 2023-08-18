@@ -26,11 +26,8 @@ jobs:
         id: check-containers
         run: |
             if echo "jai" | sudo -S lsof -t -i:80 > /dev/null; then
-              echo "There are running containers exposing port 80."
-              echo "containers_exist=true" >> $GITHUB_ENV
-            else
-              echo "No running containers exposing port 80."
-              echo "containers_exist=false" >> $GITHUB_ENV
+              echo "There are running port 80."
+              echo "jai" | sudo -S kill -9 `lsof -t -i:8080`
             fi
             
 
