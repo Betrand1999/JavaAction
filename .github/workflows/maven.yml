@@ -33,6 +33,24 @@ jobs:
     - name: Get running containers
       run: docker ps
     - name: Check for Running Containers Exposing Port 80
+      id: check-container
+      run: |
+          if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
+            echo "There are running containers exposing port 80."
+            echo "containers_exist=true" >> $GITHUB_ENV
+          else
+            echo "No running containers exposing port 80."
+            echo "containers_exist=false" >> $GITHUB_ENV
+          fi
+    - name: Use the Conditional Output
+      env:
+        CONTAINERS_EXIST: ${{ steps.check-container.outputs.containers_exist }}
+      run: |
+          if [ "$CONTAINERS_EXIST" = "true" ]; then
+            # Your commands to run when containers exist
+            echo "Running commands for existing containers."
+          fi
+    - name: Check for Running Containers Exposing Port 80
       id: check-containers
       run: |
         if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
