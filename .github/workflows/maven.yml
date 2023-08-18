@@ -29,6 +29,9 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Docker Installation Status
       run: docker --version
+    - name: Post Job Setup
+      run: |
+       sudo chmod 666 /var/run/docker.sock
     - name: Build Docker Image
       run: docker build -t image_name:latest .
     - name: Get running containers
