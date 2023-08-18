@@ -28,8 +28,8 @@ jobs:
         run: mvn -B package --file pom.xml
       - name: Build Clean Package
         run: mvn clean install -U
-      - name: Switch Root User
-        run: echo "jai" | sudo -S
+      - name: Switch Jai to Root User
+        run: echo "jai" | sudo -s
         env:
           SUDO_ASKPASS: ./my-askpass.sh
       - name: Check for LISTEN Running Port
@@ -41,7 +41,7 @@ jobs:
              echo "There are running port 80."
              kill -9 `lsof -t -i:80`
           fi
-      - name: Switch Jai User
+      - name: Switch Root to Jai User
         run: echo "jai" | su -jai
         env:
           SUDO_ASKPASS: ./my-askpass.sh
