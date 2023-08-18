@@ -43,38 +43,17 @@ jobs:
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
       - name: "Identify the process on port 80 and terminate it."
         run: |
-          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
+          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
+            docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
+          elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "Terminate the process running on port 80."
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
-  check-docker:
-    name: "Verify if Docker is installed and a container is running. If there are processes on port 80, terminate them."
-    runs-on: self-hosted
-    needs: check-port
-    steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v3
-      - name: "Check if Docker is installed"
-        id: check-docker
-        run: |
-          if command -v docker &> /dev/null; then
-            echo "Docker is installed"
-            echo "docker_exist=true" >> $GITHUB_ENV
-          fi
-      - name: "Identify containers with active processes on Port 80 and proceed to stop them."
-        env:
-          CONTAINERS_EXIST: ${{ steps.check-docker.outputs.docker_exist }}
-        run: |
-          if [ "$CONTAINERS_EXIST" = "true" ]; then
-            echo "Stop the container running on port 80."
-            if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
-              docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
-            fi
-          fi
+
   build_run:
     name: "Compile and Execute a Java Maven Dependency Project"
     runs-on: self-hosted
-    needs: check-docker
+    needs: check-port
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
