@@ -29,9 +29,9 @@ jobs:
       - name: Build Clean Package
         run: mvn clean install -U
       - name: Switch Jai to Root User
-        run: echo "jai" | sudo -s
+        run:  echo "jai" | sudo -S
         env:
-          SUDO_ASKPASS: ./my-askpass.sh
+          SUDO_ASKPASS: /dev/null
       - name: Check for LISTEN Running Port
         run: lsof -i -P -n | grep LISTEN
       - name: Check for Running Port 80 then kill process Id
