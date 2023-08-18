@@ -27,10 +27,11 @@ jobs:
         env:
           PORT_EXIST: ${{ steps.check-port.outputs.port_exist }}
         run: |
-          echo "${{ steps.check-port.outputs.port_exist }}"
           if [ "$PORT_EXIST" = "containerd" ]; then
+             echo "The value of \$PORT_EXIST is 'containerd'"
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           elif [ "$PORT_EXIST" = "process" ]; then
+             echo "The value of \$PORT_EXIST is 'process'"
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
   compile_and_execute:
