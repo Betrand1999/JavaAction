@@ -54,10 +54,8 @@ jobs:
           PORT_EXIST: ${{ steps.check-port.outputs.port_exist }}
         run: |
           if [ "$PORT_EXIST" = "process" ]; then
-            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p"
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           elif [ "$PORT_EXIST" = "containerd" ]; then
-            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd)"
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           fi
           
