@@ -26,8 +26,6 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - name: Get Docker API Version
-      run: /usr/bin/docker version --format '{{.Server.APIVersion}}'
     - name: Docker Installation Version
       run: docker --version
     - name: Build Docker Image
