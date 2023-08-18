@@ -8,7 +8,7 @@ on:
 
 jobs:
   check-port:
-    name: "Ensure that Java and Maven are installed."
+    name: "Ensure that Port 80 is not in a running state."
     runs-on: self-hosted
     steps:
       - name: Checkout code
