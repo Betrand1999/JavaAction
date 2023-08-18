@@ -40,8 +40,6 @@ jobs:
       id: check-container
       run: |
           if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
-            echo "There are running containers exposing port 80."
-            echo "containers_exist=true" >> $GITHUB_ENV
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           fi
     - name: Start Docker containers with jpoceansin/image_name:latest
