@@ -20,9 +20,10 @@ jobs:
       - name: "Identify the process on port 80"
         id: check-port
         run: |
-          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
+          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
-          elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
+          fi
+          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
   compile_and_execute:
