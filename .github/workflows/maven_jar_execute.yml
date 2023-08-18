@@ -14,6 +14,7 @@ on:
 
 jobs:
   check-java-maven:
+    name: Verify Java Maven Dependency
     runs-on: self-hosted
     steps:
       - name: Checkout code
@@ -32,6 +33,7 @@ jobs:
             echo "Maven is already installed"
           fi
   check-port:
+    name: Verify rocesses on Port 80 if Present
     runs-on: self-hosted
     needs: check-java-maven
     steps:
@@ -47,6 +49,7 @@ jobs:
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
   check-docker:
+    name: Verify Docker Installation and Terminate Processes on Port 80 if Present
     runs-on: self-hosted
     needs: check-port
     steps:
@@ -77,6 +80,7 @@ jobs:
             fi
           fi
   build:
+    name: Build Java Maven Dependency  Project
     runs-on: self-hosted
     needs: check-docker
     steps:
