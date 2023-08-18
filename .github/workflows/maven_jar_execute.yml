@@ -13,8 +13,24 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
 
+  check-docker:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Check if Docker is installed
+        id: check-docker
+        run: |
+          if command -v docker &> /dev/null; then
+            echo "Docker is installed"
+            echo "docker_exist=true" >> $GITHUB_ENV
+          else
+            echo "Docker is not installed"
+            echo "docker_exist=false" >> $GITHUB_ENV
+          fi
+
+  build:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
@@ -36,11 +52,21 @@ jobs:
       - name: Running LISTEN Ports list
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
       - name: Check for Running Containers Exposing Port 80
-        id: check-containers
+        id: check-port
         run: |
             if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
               echo "There are running port 80."
               echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
             fi
+      - name: if Docker Exist Conditional Output
+        env:
+          CONTAINERS_EXIST: ${{ steps.check-docker.outputs.docker_exist }}
+        run: |
+              if [ "$CONTAINERS_EXIST" = "true" ]; then
+                echo "Running commands for existing containers."
+                if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
+                  docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
+                fi
+              fi
       - name: JVM and execute in Background
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S java -jar target/MSB-0.0.1-SNAPSHOT.war &
