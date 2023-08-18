@@ -43,13 +43,6 @@ jobs:
             echo "No running containers exposing port 80."
             echo "containers_exist=false" >> $GITHUB_ENV
           fi
-    - name: Use the Conditional Output
-      env:
-        CONTAINERS_EXIST: ${{ steps.check-container.outputs.containers_exist }}
-      run: |
-          if [ "$CONTAINERS_EXIST" = "true" ]; then
-            echo "There are running containers exposing port 80."
-          fi
     - name: Start Docker containers with image_name:latest
       run: docker run -d -p 80:80 image_name:latest
 
