@@ -29,14 +29,12 @@ jobs:
       - name: Run sudo lsof command
         run: |
           echo "jai" | sudo -S lsof -i -P -n | grep LISTEN
-        env:
-          SUDO_ASKPASS: ./my-askpass.sh
       - name: Check for Running Containers Exposing Port 80
         id: check-containers
         run: |
             if echo "jai" | sudo -S lsof -t -i:80 > /dev/null; then
               echo "There are running port 80."
-              echo "jai" | sudo kill -9 $(echo "jai" | sudo -S lsof -t -i:80)
+              echo "jai" | sudo -S kill -9 $(echo "jai" | sudo -S lsof -t -i:80)
             fi
       - name: JVM and execute in Background
         run: echo "jai" | sudo -S java -jar target/MSB-0.0.1-SNAPSHOT.war &
