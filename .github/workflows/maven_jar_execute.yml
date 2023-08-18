@@ -28,9 +28,17 @@ jobs:
         run: mvn -B package --file pom.xml
       - name: Build Clean Package
         run: mvn clean install -U
-      - name: Run sudo lsof command
+      - name: Check for LISTEN Running Port
         run: |
           echo "jai" | sudo -S lsof -i -P -n | grep LISTEN
+        env:
+          SUDO_ASKPASS: ./my-askpass.sh
+      - name: Check for Running Port 80 then kill process Id
+        id: check-containers
+        run: |
+          if  echo "jai" | sudo lsof -t -i:80 > /dev/null; then
+             echo "jai" | sudo kill -9 `lsof -t -i:80`
+          fi
         env:
           SUDO_ASKPASS: ./my-askpass.sh
       - name: JVM and execute in Background
