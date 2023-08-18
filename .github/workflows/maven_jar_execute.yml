@@ -44,6 +44,7 @@ jobs:
       - name: "Identify the process on port 80 and terminate it."
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
+            echo "Process Name $(sudo -S lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd)"
             docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
           elif echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "Terminate the process running on port 80."
