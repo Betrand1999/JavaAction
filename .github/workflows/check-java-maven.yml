@@ -1,6 +1,9 @@
 name: "Ensure that Java and Maven are installed."
 
-on: [ push ]
+on:
+  push:
+    paths:
+      - '.github/workflows/check-java-maven.yml'
 
 jobs:
   check-java-maven:
