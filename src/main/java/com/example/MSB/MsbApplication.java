@@ -11,7 +11,7 @@ public class MsbApplication {
 
     @GetMapping("/")
     public String hello() {
-        return "<h1>Hello, world!</h1>";
+        return "<h1>Hello, CICD...</h1>";
     }
 	public static void main(String[] args) {
 		SpringApplication.run(MsbApplication.class, args);
