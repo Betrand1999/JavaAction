@@ -34,7 +34,9 @@ jobs:
 
   check-port:
     runs-on: self-hosted
+    needs: check-java-maven
     steps:
+      - uses: actions/checkout@v3
       - name: Running LISTEN Ports list
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
       - name: Adentify the Process on Port 80
@@ -47,7 +49,9 @@ jobs:
 
   check-docker:
     runs-on: self-hosted
+    needs: check-port
     steps:
+      - uses: actions/checkout@v3
       - name: Check if Docker is installed
         id: check-docker
         run: |
@@ -76,9 +80,10 @@ jobs:
 
   build:
     runs-on: self-hosted
+    needs: check-docker
     steps:
+      - uses: actions/checkout@v3
       - name: Build with Maven
         run: mvn -B package --file pom.xml
-
       - name: JVM and execute in Background
         run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S java -jar target/MSB-0.0.1-SNAPSHOT.war &
