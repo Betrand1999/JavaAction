@@ -35,7 +35,6 @@ jobs:
   build:
     name: "Build a Project"
     runs-on: self-hosted
-    needs: ensure-port
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
