@@ -32,12 +32,9 @@ jobs:
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
 
-
-
   build:
     name: "Build a Project"
     runs-on: self-hosted
-    needs: [ authenticate ]
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
