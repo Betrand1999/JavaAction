@@ -36,7 +36,6 @@ jobs:
   build-docker-image:
     name: "Build Docker Image"
     runs-on: self-hosted
-    needs: [ build ]
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
