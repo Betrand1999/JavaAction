@@ -42,13 +42,13 @@ jobs:
         run: mvn -B package --file pom.xml
 
   build-docker-image:
-    name: "Authenticate the services."
+    name: "Build and Push a Docker Image"
     runs-on: self-hosted
     needs: [ build ]
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
-      - name: "Build and Release Image on Docker Hub."
+      - name: "Authenticate with Docker Hub and Build and Push Image."
         uses: docker/build-push-action@v2
         with:
           context: .
