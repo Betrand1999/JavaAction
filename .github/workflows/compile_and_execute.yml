@@ -1,4 +1,4 @@
-name: "Compile and Execute a Java Maven Dependency Project"
+name: "Compile and Execute a Project."
 
 on:
   push:
