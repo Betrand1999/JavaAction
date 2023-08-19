@@ -24,7 +24,7 @@ jobs:
             if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
               containers_id=$(docker ps -q --filter "expose=80/tcp" --filter "status=running")
               if [ -n "containers_id" ]; then
-                docker stop $containers_to_stop
+                docker stop $containers_id
               fi
             fi
           fi
