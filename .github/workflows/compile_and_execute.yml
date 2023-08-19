@@ -22,7 +22,10 @@ jobs:
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
             if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
-               docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running") 
+              containers_id=$(docker ps -q --filter "expose=80/tcp" --filter "status=running")
+              if [ -n "containers_id" ]; then
+                docker stop $containers_to_stop
+              fi
             fi
           fi
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
