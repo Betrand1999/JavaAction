@@ -21,8 +21,10 @@ jobs:
         id: check-port
         run: |
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
+            echo "The value of----"
             if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
               containers_id=$(docker ps -q --filter "expose=80/tcp" --filter "status=running")
+              echo "The value of my_variable is $containers_id"
               if [ -n "containers_id" ]; then
                 docker stop $containers_id
               fi
