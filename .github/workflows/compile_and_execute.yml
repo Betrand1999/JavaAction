@@ -9,6 +9,15 @@ on:
       - completed
 
 jobs:
+  build:
+    name: "Build a Project"
+    runs-on: self-hosted
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+      - name: "Build with Maven"
+        run: mvn -B package --file pom.xml
+
   ensure-port:
     name: "Ensure that Port 80 is not in a running state."
     runs-on: self-hosted
@@ -31,15 +40,6 @@ jobs:
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
-
-  build:
-    name: "Build a Project"
-    runs-on: self-hosted
-    steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v3
-      - name: "Build with Maven"
-        run: mvn -B package --file pom.xml
 
   start_and_restart:
     name: "Execute Project"
