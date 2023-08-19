@@ -1,0 +1,73 @@
+name: "Compile and Execute a Project."
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_run:
+    workflows: [ "Ensure that all dependencies are installed." ]
+    types:
+      - completed
+
+jobs:
+  ensure-port:
+    name: "Ensure that Port 80 is not in a running state."
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: "List of Ports Currently in the LISTEN State"
+        run: echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -i -P -n | grep LISTEN
+      - name: "Identify the process on port 80"
+        id: check-port
+        run: |
+          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t | xargs -n 1 ps -o comm= -p | grep containerd > /dev/null; then
+            if docker ps -q --filter "expose=80/tcp" --filter "status=running" > /dev/null; then
+              containers_id=$(docker ps -q --filter "expose=80/tcp" --filter "status=running")
+              if [ ! -z "$containers_id" ]; then
+                docker stop $containers_id
+              fi
+            fi
+          fi
+          if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
+          fi
+
+  authenticate:
+    name: "Authenticate Services"
+    runs-on: self-hosted
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+      - name: "Authenticate with Docker Hub."
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  build:
+    name: "Build a Project"
+    runs-on: self-hosted
+    needs: [ authenticate ]
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+      - name: "Generate package using pom.xml."
+        run: mvn -B package --file pom.xml
+      - name: "Build and Release Image on Docker Hub."
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          file: ./Dockerfile
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/image_name:latest-${{ github.sha }}
+
+  start_and_execute:
+    name: "Execute Project"
+    runs-on: self-hosted
+    needs: [ build, ensure-port ]
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v3
+      - name: "Launch Docker containers using the image_name:latest."
+        run: docker run -it --rm -d -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/image_name:latest-${{ github.sha }}
+
