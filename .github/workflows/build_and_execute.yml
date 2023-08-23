@@ -69,5 +69,5 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v3
       - name: "Launch Docker containers using the image_name:latest."
-        run: docker run -it --rm -d -p 80:80 image_name:latest-${{ github.sha }}
+        run: docker run -it --rm -d -p 80:80 $ECR_REGISTRY/$ECR_IMAGE:$IMAGE_TAG
 
