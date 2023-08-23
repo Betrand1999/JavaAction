@@ -6,9 +6,7 @@ target/
 .idea/
 .vscode/
 
-# Spring Boot application properties
-application*.yml
-application*.properties
+
 
 # Maven artifact lock file
 mvnw.lock
