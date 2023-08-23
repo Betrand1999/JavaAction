@@ -10,6 +10,7 @@ COPY src ./src
 
 # Build the application using Maven
 RUN mvn clean install
+RUN mvn package
 
 CMD ["java", "-jar", "target/MSB-0.0.1-SNAPSHOT.war"]
 
