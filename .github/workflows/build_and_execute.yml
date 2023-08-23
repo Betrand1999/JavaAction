@@ -12,7 +12,7 @@ jobs:
 
   build:
     name: "Build a Project"
-    runs-on: self-java
+    runs-on: self-hosted
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
@@ -21,7 +21,7 @@ jobs:
 
   ensure-port:
     name: "Ensure that Port 80 is not in a running state."
-    runs-on: self-java
+    runs-on: self-hosted
     needs: [ build ]
     steps:
       - name: Checkout code
@@ -47,7 +47,7 @@ jobs:
 
   start_and_execute:
     name: "Execute Project"
-    runs-on: self-java
+    runs-on: self-hosted
     needs: [ ensure-port]
     steps:
       - name: "Checkout code"
