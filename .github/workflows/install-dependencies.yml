@@ -21,6 +21,6 @@ jobs:
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S yum install -y docker
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S systemctl start docker
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S systemctl enable docker
-            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S 666 /var/run/docker.sock
+            echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S chmod 666 /var/run/docker.sock
             echo "docker_exist=false" >> $GITHUB_ENV
           fi
