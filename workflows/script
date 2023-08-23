@@ -1,0 +1,48 @@
+nano script.sh
+sudo userdel java
+sudo useradd -m java && echo "java:java" | sudo chpasswd
+sudo usermod -aG wheel java
+echo 'java' | su - java
+cd /home/java
+
+
+echo 'java' | su - java
+cd /home/java
+echo 'java' | rm -rf actions-runner
+mkdir actions-runner && cd actions-runner
+curl -o actions-runner-linux-x64-2.308.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.308.0/actions-runner-linux-x64-2.308.0.tar.gz
+echo "9f994158d49c5af39f57a65bf1438cbae4968aec1e4fec132dd7992ad57c74fa  actions-runner-linux-x64-2.308.0.tar.gz" | shasum -a 256 -c
+tar xzf ./actions-runner-linux-x64-2.308.0.tar.gz
+sudo yum install libicu-devel -y
+sudo chmod 777 /home/java/actions-runner/
+
+sudo ./svc.sh install
+sudo ./svc.sh start
+
+
+sudo chmod +x script.sh
+./script.sh
+
+sudo yum update -y
+sudo yum install -y docker
+sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+sudo 666 /var/run/docker.sock
+sudo usermod -aG docker java
+
+
+
+sudo lsof -i -P -n | grep LISTEN
+sudo kill -9 `lsof -t -i:80`
+sudo lsof -t -i:80 | xargs -n 1 ps -o comm= -p | grep containerd
+docker ps
+docker ps -q --filter "ancestor=image_name:latest"
+docker ps -q --filter "expose=80/tcp" --filter "status=running"
+docker stop $(docker ps -q --filter "expose=80/tcp" --filter "status=running")
+docker exec -it $(docker ps -q --filter "expose=80/tcp" --filter "status=running") /bin/bash
+
+
+docker --version
+java -version
+mvn -V

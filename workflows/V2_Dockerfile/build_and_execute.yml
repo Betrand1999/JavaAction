@@ -1,12 +1,12 @@
 name: "Compile and Execute a Project."
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_run:
     workflows: [ "Ensure that all dependencies are installed." ]
     types:
       - completed
+  push:
+    branches: [ "main" ]
 
 jobs:
 
