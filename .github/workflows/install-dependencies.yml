@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/install-dependencies.yml'
+      - 'Dockerfile'
 
 jobs:
   check-java-maven:
