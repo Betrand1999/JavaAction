@@ -1,11 +1,9 @@
 nano script.sh
+sudo chmod +x script.sh
+-----------------------------------------
 sudo userdel java
 sudo useradd -m java && echo "java:java" | sudo chpasswd
 sudo usermod -aG wheel java
-echo 'java' | su - java
-cd /home/java
-
-
 echo 'java' | su - java
 cd /home/java
 echo 'java' | rm -rf actions-runner
@@ -15,7 +13,7 @@ echo "9f994158d49c5af39f57a65bf1438cbae4968aec1e4fec132dd7992ad57c74fa  actions-
 tar xzf ./actions-runner-linux-x64-2.308.0.tar.gz
 sudo yum install libicu-devel -y
 sudo chmod 777 /home/java/actions-runner/
-
+-----------------------------------------
 sudo ./svc.sh install
 sudo ./svc.sh start
 
