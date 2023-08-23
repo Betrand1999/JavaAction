@@ -29,7 +29,8 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application using Maven
-RUN mvn clean install
+
+RUN mvn clean install -U
 
 # Specify the default command to run when the container starts
 EXPOSE 80
