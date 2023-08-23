@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
-      - name: "Ensure that Docker is installed.."
+      - name: "Ensure that Docker is installed...."
         id: check-docker
         run: |
           if ! command -v docker &> /dev/null; then
