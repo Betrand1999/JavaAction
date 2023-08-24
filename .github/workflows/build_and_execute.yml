@@ -61,7 +61,7 @@ jobs:
       - name: "Run Docker container"
         run: |
           docker images
-          docker run -it --rm -d -p 80:80 $ECR_REGISTRY/$ECR_IMAGE:$IMAGE_TAG
+          docker run -it --rm -d -p 80:80 ${ECR_REGISTRY}/${ECR_IMAGE}:${IMAGE_TAG}
 
 
 
