@@ -12,6 +12,8 @@ jobs:
   build:
     name: "Build a Project"
     runs-on: self-hosted
+    outputs:
+      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
@@ -62,5 +64,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v3
       - name: "Launch Docker containers using the image_name:latest."
-        run: docker run -it --rm -d -p 80:80 ${{ steps.login-ecr.outputs.registry }}/action_image:latest-${{ github.sha }}
+        run: |
+          echo "IMAGE_TAG: ${{ needs.build.outputs.IMAGEECR_REGISTRY_TAG }}"
+          docker run -it --rm -d -p 80:80 ${{ steps.login-ecr.outputs.registry }}/action_image:latest-${{ github.sha }}
 
