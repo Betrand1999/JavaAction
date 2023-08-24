@@ -9,6 +9,7 @@ on:
       - completed
 
 jobs:
+<<<<<<< HEAD
 
   build:
     name: "Build a Project"
@@ -23,6 +24,11 @@ jobs:
     name: "Ensure that Port 80 is not in a running state."
     runs-on: self-hosted
     needs: [ build ]
+=======
+  ensure-port:
+    name: "Ensure that Port 80 is not in a running state."
+    runs-on: self-hosted
+>>>>>>> 10d177ee45903533171a68294af5158d34be7825
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -43,14 +49,40 @@ jobs:
           if echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80 > /dev/null; then
             echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S kill -9 $(echo "${{ secrets.SUDO_PASSWORD }}" | sudo -S lsof -t -i:80)
           fi
+<<<<<<< HEAD
 
 
   start_and_execute:
     name: "Execute Project"
+=======
+  build:
+    name: "Build a Project"
+>>>>>>> 10d177ee45903533171a68294af5158d34be7825
     runs-on: self-hosted
     needs: [ ensure-port]
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v3
+<<<<<<< HEAD
       - name: "Launch Docker containers using the image_name:latest."
         run: docker run -it --rm -d -p 80:80 image_name:latest
+=======
+      - name: "Login to AWS ECR"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: "Login to Amazon ECR"
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: "Build Docker image"
+        run: |
+          docker build -t ${{ steps.login-ecr.outputs.registry }}/action_image:latest-${{ github.sha }} .
+      - name: "Push Docker image on ECR"
+        run: |
+          docker push ${{ steps.login-ecr.outputs.registry }}/action_image:latest-${{ github.sha }}
+      - name: "Run Docker container"
+        run: |
+          docker run -it --rm -d -p 80:80 ${{ steps.login-ecr.outputs.registry }}/action_image:latest-${{ github.sha }}
+>>>>>>> 10d177ee45903533171a68294af5158d34be7825
